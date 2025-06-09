@@ -218,6 +218,19 @@ const ProspectCard: React.FC<ProspectCardProps> = ({
                   Prochain suivi: <span className="font-medium">{formatDate(prospect.nextFollowUpDate)}</span>
                 </span>
               </div>
+               <div className="flex items-center">
+                <Info size={16} className="text-gray-400 mr-2 flex-shrink-0" />
+                <span className="text-gray-700">
+                  Étape commerciale: <span className="font-medium">{prospect.stage || 'Non renseignée'}</span>
+                </span>
+              </div>
+
+              <div className="flex items-center">
+                <Mail size={16} className="text-gray-400 mr-2 flex-shrink-0" />
+                <span className="text-gray-700">
+                  Dernière interaction: <span className="font-medium">{prospect.lastInteractionType || 'Non renseignée'}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>

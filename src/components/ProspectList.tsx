@@ -47,8 +47,8 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
       searchTerm === '' || 
       prospect.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       prospect.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prospect.contactName.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      prospect.contactName?.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesStatus = 
       statusFilter.length === 0 ||
       statusFilter.includes(prospect.status);
@@ -56,7 +56,7 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
     const matchesSalesRep =
       salesRepFilter.length === 0 ||
       salesRepFilter.includes(prospect.salesRep);
-    
+
     return matchesSearch && matchesStatus && matchesSalesRep;
   });
 
@@ -93,7 +93,7 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
               </Button>
             </div>
           </div>
-          
+
           {showFilters && (
             <div className="mt-4 space-y-4 pt-3 border-t border-gray-200">
               <div>
@@ -114,7 +114,7 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <span className="text-sm font-medium text-gray-700 mr-2">Commercial:</span>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -136,7 +136,7 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
             </div>
           )}
         </CardHeader>
-        
+
         <CardContent>
           {filteredProspects.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
@@ -147,24 +147,14 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Club
-                    </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Contact
-                    </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Ville
-                    </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Statut
-                    </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Commercial
-                    </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Prochain suivi
-                    </th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ville</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commercial</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Étape</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interaction</th>
+                    <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prochain suivi</th>
                     <th className="px-6 py-3 bg-gray-50"></th>
                   </tr>
                 </thead>
@@ -172,7 +162,7 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
                   {filteredProspects.map(prospect => {
                     const statusOption = statusOptions.find(option => option.value === prospect.status);
                     const salesRep = salesRepOptions.find(option => option.value === prospect.salesRep);
-                    
+
                     return (
                       <tr 
                         key={prospect.id}
@@ -186,6 +176,9 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">{prospect.contactName}</div>
                           <div className="text-sm text-gray-500">{prospect.contactEmail}</div>
+                          {prospect.contactRole && (
+                            <div className="text-sm italic text-gray-400">{prospect.contactRole}</div>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center text-sm text-gray-500">
@@ -209,9 +202,15 @@ const ProspectList: React.FC<ProspectListProps> = ({ prospects, onSelectProspect
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{prospect.stage || '—'}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-500">{prospect.lastInteractionType || '—'}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center text-sm text-gray-500">
                             <Calendar size={14} className="mr-1 text-gray-400" />
-                            {formatDate(prospect.nextFollowUpDate)}
+                            {prospect.nextFollowUpDate ? formatDate(prospect.nextFollowUpDate) : '—'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

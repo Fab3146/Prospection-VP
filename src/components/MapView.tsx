@@ -10,7 +10,7 @@ import ProspectCard from './ProspectCard';
 import { MapPin, Filter, ChevronDown } from 'lucide-react';
 import Button from './ui/Button';
 
-// Fix default Leaflet marker icon (important for Vite projects)
+// Fix des icônes Leaflet par défaut
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -38,27 +38,43 @@ const MapView: React.FC<MapViewProps> = ({ prospects, onEditProspect, settings }
   ];
 
   const toggleFilter = (status: string) => {
-    setMapFilters((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+    setMapFilters(prev =>
+      prev.includes(status) ? prev.filter(s => s !== status) : [...prev, status]
     );
   };
 
   const toggleSalesRepFilter = (rep: string) => {
-    setSalesRepFilters((prev) =>
-      prev.includes(rep) ? prev.filter((r) => r !== rep) : [...prev, rep]
+    setSalesRepFilters(prev =>
+      prev.includes(rep) ? prev.filter(r => r !== rep) : [...prev, rep]
     );
   };
 
   const getStatusOption = (status: string) =>
-    statusList.find((option) => option.value === status);
+    statusList.find(option => option.value === status);
 
   const filteredProspects = prospects.filter(
-    (prospect) => mapFilters.includes(prospect.status) && salesRepFilters.includes(prospect.salesRep)
+    prospect => mapFilters.includes(prospect.status) && salesRepFilters.includes(prospect.salesRep)
   );
 
   const handleMarkerClick = (prospect: Prospect) => {
     setSelectedProspect(prospect);
   };
+
+  const getCustomIcon = (statusColor: string, borderColor: string) =>
+    L.divIcon({
+      className: '',
+      html: `
+        <div style="
+          background-color: ${statusColor};
+          border: 2px solid ${borderColor};
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+        "></div>
+      `,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+    });
 
   return (
     <div className="h-full flex flex-col">
@@ -88,7 +104,7 @@ const MapView: React.FC<MapViewProps> = ({ prospects, onEditProspect, settings }
                   <label key={status.value} className="inline-flex items-center">
                     <input
                       type="checkbox"
-                      className="form-checkbox h-4 w-4 text-blue-800 transition duration-150 ease-in-out"
+                      className="form-checkbox h-4 w-4 text-blue-800"
                       checked={mapFilters.includes(status.value)}
                       onChange={() => toggleFilter(status.value)}
                     />
@@ -107,7 +123,7 @@ const MapView: React.FC<MapViewProps> = ({ prospects, onEditProspect, settings }
                   <label key={rep.value} className="inline-flex items-center">
                     <input
                       type="checkbox"
-                      className="form-checkbox h-4 w-4 text-blue-800 transition duration-150 ease-in-out"
+                      className="form-checkbox h-4 w-4 text-blue-800"
                       checked={salesRepFilters.includes(rep.value)}
                       onChange={() => toggleSalesRepFilter(rep.value)}
                     />
@@ -127,19 +143,25 @@ const MapView: React.FC<MapViewProps> = ({ prospects, onEditProspect, settings }
           <MapContainer center={[46.2276, 2.2137]} zoom={6} style={{ width: '100%', height: '100%' }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            {filteredProspects.map((prospect) => (
-              <Marker
-                key={prospect.id}
-                position={[prospect.coordinates.lat, prospect.coordinates.lng]}
-                eventHandlers={{
-                  click: () => handleMarkerClick(prospect),
-                }}
-              >
-                <Popup>
-                  <div className="text-sm font-medium">{prospect.name}</div>
-                </Popup>
-              </Marker>
-            ))}
+            {filteredProspects.map((prospect) => {
+              const status = getStatusOption(prospect.status);
+              const salesRep = salesRepOptions.find(r => r.value === prospect.salesRep);
+
+              return (
+                <Marker
+                  key={prospect.id}
+                  position={[prospect.coordinates.lat, prospect.coordinates.lng]}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(prospect),
+                  }}
+                  icon={getCustomIcon(status?.color || 'gray', salesRep?.color || 'white')}
+                >
+                  <Popup>
+                    <div className="text-sm font-medium">{prospect.name}</div>
+                  </Popup>
+                </Marker>
+              );
+            })}
           </MapContainer>
         </div>
 

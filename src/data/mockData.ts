@@ -196,3 +196,25 @@ export const salesRepOptions: SalesRepOption[] = [
   { value: 'mathieu', label: 'Mathieu', color: '#059669' },
   { value: 'olivier', label: 'Olivier', color: '#DC2626' }
 ];
+export const originOptions = [
+  { value: 'salon', label: 'Salon' },
+  { value: 'appelsortant', label: 'Appel sortant' },
+  { value: 'inbound', label: 'Demande entrante' },
+  { value: 'terrain', label: 'Prospection terrain' },
+  { value: 'boucheoreille', label: 'Bouche à oreille' },
+];
+
+export const stageOptions = [
+  { value: 'decouverte', label: 'Découverte' },
+  { value: 'demo', label: 'Démo' },
+  { value: 'negociation', label: 'Négociation' },
+  { value: 'signature', label: 'Signature' },
+  { value: 'perdu', label: 'Perdu' },
+];
+
+export const interactionOptions = [
+  { value: 'email', label: 'E-mail' },
+  { value: 'telephone', label: 'Téléphone' },
+  { value: 'visio', label: 'Visio' },
+  { value: 'rdv', label: 'RDV terrain' },
+];
